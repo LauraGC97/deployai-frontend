@@ -1,6 +1,6 @@
 {
   "buildCommand": "npx ng build",
-  "outputDirectory": "dist/DeployAi",
+  "outputDirectory": "dist/DeployAi/browser",
   "framework": null,
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
