@@ -1,0 +1,339 @@
+<div class="docs-layout">
+
+  <!-- Overlay para cerrar sidebar en móvil -->
+  @if (sidebarOpen()) {
+    <div class="docs-sidebar-overlay" (click)="closeDocsSidebar()"></div>
+  }
+
+  <!-- SIDEBAR -->
+  <aside class="docs-sidebar" [class.open]="sidebarOpen()">
+    <div class="docs-sidebar-header">
+      <button class="back-btn" (click)="goHome()">
+        <span>←</span> Deploy.ai
+      </button>
+      <div class="docs-logo-text">Documentación</div>
+    </div>
+
+    <nav class="docs-nav">
+      @for (section of sections; track section.id) {
+        <button
+          class="docs-nav-item"
+          [class.active]="activeSection() === section.id"
+          (click)="setSection(section.id); closeDocsSidebar()">
+          <span class="docs-nav-icon">{{ section.icon }}</span>
+          <span>{{ section.label }}</span>
+        </button>
+      }
+    </nav>
+
+    <div class="docs-sidebar-footer">
+      <button class="try-btn" (click)="goToChat()">
+        Probar Deploy AI →
+      </button>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO -->
+  <main class="docs-main">
+    <button class="docs-sidebar-toggle" (click)="toggleDocsSidebar()">☰</button>
+    <!-- INSTALACIÓN -->
+    @if (activeSection() === 'installation') {
+      <div class="docs-content">
+        <div class="docs-badge">// getting started</div>
+        <h1 class="docs-title">Instalación y configuración</h1>
+        <p class="docs-lead">Deploy AI está compuesto por dos partes: el front-end en Angular y el back-end en Node.js. Ambos deben estar corriendo para que la IA funcione.</p>
+
+        <div class="docs-section">
+          <h2>Requisitos previos</h2>
+          <div class="req-list">
+            <div class="req-item">
+              <span class="req-name">Node.js</span>
+              <span class="req-version">v18 o superior</span>
+            </div>
+            <div class="req-item">
+              <span class="req-name">Angular CLI</span>
+              <span class="req-version">v17 o superior</span>
+            </div>
+            <div class="req-item">
+              <span class="req-name">API Key de Groq</span>
+              <span class="req-version">console.groq.com (gratuito)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <h2>1. Clonar el repositorio</h2>
+          <div class="code-block">
+            <div class="code-block-bar">
+              <span class="code-block-label">terminal</span>
+            </div>
+            <pre><span class="cb-comment"># Clona el proyecto</span>
+<span class="cb-cmd">git clone</span> <span class="cb-str">https://github.com/tu-usuario/deploy-ai</span>
+<span class="cb-cmd">cd</span> deploy-ai</pre>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <h2>2. Configurar el back-end</h2>
+          <div class="code-block">
+            <div class="code-block-bar">
+              <span class="code-block-label">terminal</span>
+            </div>
+            <pre><span class="cb-cmd">cd</span> deploy-backend
+<span class="cb-cmd">npm install</span>
+<span class="cb-comment"># Crea el archivo .env con tu API key</span>
+<span class="cb-cmd">echo</span> <span class="cb-str">"GROQ_API_KEY=tu_api_key"</span> > .env
+<span class="cb-cmd">npm run dev</span></pre>
+          </div>
+          <div class="docs-note">
+            <span class="note-icon">ℹ️</span>
+            El servidor arrancará en <code>http://localhost:3000</code>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <h2>3. Configurar el front-end</h2>
+          <div class="code-block">
+            <div class="code-block-bar">
+              <span class="code-block-label">terminal</span>
+            </div>
+            <pre><span class="cb-cmd">cd</span> DeployAi
+<span class="cb-cmd">npm install</span>
+<span class="cb-cmd">ng serve</span></pre>
+          </div>
+          <div class="docs-note">
+            <span class="note-icon">ℹ️</span>
+            La aplicación estará disponible en <code>http://localhost:4200</code>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- MODOS -->
+    @if (activeSection() === 'modes') {
+      <div class="docs-content">
+        <div class="docs-badge">// funcionalidad</div>
+        <h1 class="docs-title">Modos de la IA</h1>
+        <p class="docs-lead">Deploy AI tiene tres modos especializados, cada uno con un system prompt optimizado para una tarea concreta.</p>
+
+        <div class="mode-card">
+          <div class="mode-card-header">
+            <span class="mode-card-icon" style="color:var(--cyan)">⚡</span>
+            <div>
+              <div class="mode-card-name" style="color:var(--cyan)">deployFast() — Generar código</div>
+              <div class="mode-card-sub">Genera código completo desde una descripción</div>
+            </div>
+          </div>
+          <p class="mode-card-desc">Describe la funcionalidad que necesitas en lenguaje natural y la IA generará el código completo, limpio y comentado. Indica automáticamente el lenguaje usado y las dependencias necesarias.</p>
+          <div class="mode-card-example">
+            <span class="example-label">Ejemplo de uso</span>
+            <span class="example-text">"Genera un servicio Angular que consuma una API REST con manejo de errores"</span>
+          </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-card-header">
+            <span class="mode-card-icon" style="color:var(--violet)">🔍</span>
+            <div>
+              <div class="mode-card-name" style="color:var(--violet)">if (intelligent) — Analizar código</div>
+              <div class="mode-card-sub">Detecta errores y sugiere mejoras</div>
+            </div>
+          </div>
+          <p class="mode-card-desc">Pega tu código y la IA lo revisará en detalle: detectará bugs, malas prácticas, problemas de rendimiento y te sugerirá mejoras concretas con explicaciones.</p>
+          <div class="mode-card-example">
+            <span class="example-label">Ejemplo de uso</span>
+            <span class="example-text">"Aquí mi componente Angular, ¿hay algún problema de rendimiento?"</span>
+          </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-card-header">
+            <span class="mode-card-icon" style="color:var(--yellow)">📖</span>
+            <div>
+              <div class="mode-card-name" style="color:var(--yellow)">explain() — Explicar concepto</div>
+              <div class="mode-card-sub">Tutorías de programación personalizadas</div>
+            </div>
+          </div>
+          <p class="mode-card-desc">Pregunta cualquier concepto de programación y la IA lo explicará con ejemplos prácticos adaptados a tu nivel. Ideal para aprender nuevas tecnologías.</p>
+          <div class="mode-card-example">
+            <span class="example-label">Ejemplo de uso</span>
+            <span class="example-text">"¿Cuál es la diferencia entre Observable y Promise en Angular?"</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- USO DEL CHAT -->
+    @if (activeSection() === 'chat') {
+      <div class="docs-content">
+        <div class="docs-badge">// guía de usuario</div>
+        <h1 class="docs-title">Cómo usar el chat</h1>
+        <p class="docs-lead">La interfaz del chat está diseñada para ser intuitiva. Aquí tienes todo lo que necesitas saber.</p>
+
+        <div class="docs-section">
+          <h2>Interfaz principal</h2>
+          <div class="ui-guide">
+            <div class="ui-guide-item">
+              <div class="ui-guide-num">1</div>
+              <div class="ui-guide-content">
+                <div class="ui-guide-title">Panel lateral — Modos y sugerencias</div>
+                <p>Selecciona el modo según tu necesidad. Las sugerencias rápidas te permiten empezar con un clic sin escribir nada.</p>
+              </div>
+            </div>
+            <div class="ui-guide-item">
+              <div class="ui-guide-num">2</div>
+              <div class="ui-guide-content">
+                <div class="ui-guide-title">Área de mensajes</div>
+                <p>Las respuestas de la IA se renderizan con formato Markdown — negritas, bloques de código con syntax highlight, listas y tablas.</p>
+              </div>
+            </div>
+            <div class="ui-guide-item">
+              <div class="ui-guide-num">3</div>
+              <div class="ui-guide-content">
+                <div class="ui-guide-title">Input de texto</div>
+                <p>Escribe tu mensaje y pulsa <code>Enter</code> para enviar. Usa <code>Shift + Enter</code> para nueva línea sin enviar.</p>
+              </div>
+            </div>
+            <div class="ui-guide-item">
+              <div class="ui-guide-num">4</div>
+              <div class="ui-guide-content">
+                <div class="ui-guide-title">Historial de conversaciones</div>
+                <p>Tus conversaciones se guardan automáticamente en el navegador. Puedes recuperarlas desde el panel lateral en cualquier momento.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <h2>Consejos para mejores resultados</h2>
+          <div class="tips-list">
+            <div class="tip-item">
+              <span class="tip-icon" style="color:var(--cyan)">→</span>
+              <span>Sé específico en tu descripción — cuanto más detalle, mejor código genera.</span>
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon" style="color:var(--violet)">→</span>
+              <span>Para analizar código, pega el código completo para un análisis más preciso.</span>
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon" style="color:var(--yellow)">→</span>
+              <span>Puedes hacer preguntas de seguimiento — la IA recuerda el contexto de la conversación.</span>
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon" style="color:var(--green)">→</span>
+              <span>Indica el lenguaje o framework que usas para obtener código más preciso.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- API -->
+    @if (activeSection() === 'api') {
+      <div class="docs-content">
+        <div class="docs-badge">// referencia técnica</div>
+        <h1 class="docs-title">Referencia de la API</h1>
+        <p class="docs-lead">El back-end expone una API REST en <code>http://localhost:3000</code>. Todos los endpoints devuelven JSON.</p>
+
+        <div class="docs-section">
+          <h2>Health check</h2>
+          <div class="endpoint-card">
+            <div class="endpoint-header">
+              <span class="method get">GET</span>
+              <span class="endpoint-path">/health</span>
+            </div>
+            <p class="endpoint-desc">Verifica que el servidor está funcionando correctamente.</p>
+            <div class="code-block">
+              <div class="code-block-bar"><span class="code-block-label">respuesta</span></div>
+              <pre><span class="cb-key">"status"</span>: <span class="cb-str">"ok"</span>,
+<span class="cb-key">"service"</span>: <span class="cb-str">"Deploy AI Backend"</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <h2>Enviar mensaje</h2>
+          <div class="endpoint-card">
+            <div class="endpoint-header">
+              <span class="method post">POST</span>
+              <span class="endpoint-path">/api/chat</span>
+            </div>
+            <p class="endpoint-desc">Envía un array de mensajes al modelo Llama 3 de Groq y devuelve la respuesta.</p>
+
+            <div class="param-section">
+              <div class="param-label">Body (JSON)</div>
+              <div class="code-block">
+                <div class="code-block-bar"><span class="code-block-label">request</span></div>
+                <pre><span class="cb-key">"messages"</span>: [
+  &#123;
+    <span class="cb-key">"role"</span>: <span class="cb-str">"user"</span>,
+    <span class="cb-key">"content"</span>: <span class="cb-str">"Genera un componente Angular"</span>
+  &#125;
+]</pre>
+              </div>
+            </div>
+
+            <div class="param-section">
+              <div class="param-label">Respuesta exitosa — 200</div>
+              <div class="code-block">
+                <div class="code-block-bar"><span class="code-block-label">response</span></div>
+                <pre><span class="cb-key">"content"</span>: <span class="cb-str">"Aquí tienes el componente..."</span></pre>
+              </div>
+            </div>
+
+            <div class="param-section">
+              <div class="param-label">Respuesta de error — 400 / 500</div>
+              <div class="code-block">
+                <div class="code-block-bar"><span class="code-block-label">response</span></div>
+                <pre><span class="cb-key">"error"</span>: <span class="cb-str">"El campo messages es obligatorio"</span></pre>
+              </div>
+            </div>
+
+            <div class="param-table-wrap">
+              <div class="param-label">Parámetros del mensaje</div>
+              <table class="param-table">
+                <thead>
+                  <tr>
+                    <th>Campo</th>
+                    <th>Tipo</th>
+                    <th>Valores</th>
+                    <th>Descripción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>role</code></td>
+                    <td>string</td>
+                    <td><code>user</code> · <code>assistant</code></td>
+                    <td>Quién envía el mensaje</td>
+                  </tr>
+                  <tr>
+                    <td><code>content</code></td>
+                    <td>string</td>
+                    <td>cualquier texto</td>
+                    <td>Contenido del mensaje</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <h2>Modelo utilizado</h2>
+          <div class="model-card">
+            <div class="model-name">llama-3.3-70b-versatile</div>
+            <div class="model-meta">
+              <span class="model-tag">Groq</span>
+              <span class="model-tag">70B parámetros</span>
+              <span class="model-tag">Gratuito</span>
+              <span class="model-tag">~400 tokens/s</span>
+            </div>
+            <p class="model-desc">Modelo Llama 3.3 de Meta ejecutado en la infraestructura de Groq. Ofrece velocidad de inferencia muy alta con un límite de 14.400 requests/día en el tier gratuito.</p>
+          </div>
+        </div>
+      </div>
+    }
+
+  </main>
+</div>

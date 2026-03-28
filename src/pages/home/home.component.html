@@ -1,0 +1,306 @@
+<canvas #bgCanvas id="bg-canvas"></canvas>
+
+<!-- ── NAVBAR ── -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <svg viewBox="0 0 200 200" fill="none" width="28" height="28" style="overflow:visible">
+  <defs>
+    <linearGradient id="nlg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#BF5AF2"/>
+    </linearGradient>
+    <linearGradient id="nlg2" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%"   stop-color="#FF9F40"/>
+      <stop offset="100%" stop-color="#FFE033"/>
+    </linearGradient>
+    <linearGradient id="nlg3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#BF5AF2" stop-opacity="0"/>
+      <stop offset="50%"  stop-color="#FF9F40" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#FF5F57" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="nlg4" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#BF5AF2"/>
+    </linearGradient>
+  </defs>
+  <g class="logo-ring-outer">
+    <polygon points="100,18 172,59 172,141 100,182 28,141 28,59"
+      fill="none" stroke="url(#nlg1)" stroke-width="2" opacity="0.6"/>
+    <circle cx="100" cy="18"  r="4" fill="#00E5FF"/>
+    <circle cx="172" cy="59"  r="4" fill="#BF5AF2"/>
+    <circle cx="172" cy="141" r="4" fill="#00E5FF"/>
+    <circle cx="100" cy="182" r="4" fill="#BF5AF2"/>
+    <circle cx="28"  cy="141" r="4" fill="#00E5FF"/>
+    <circle cx="28"  cy="59"  r="4" fill="#BF5AF2"/>
+  </g>
+  <circle cx="100" cy="100" r="56" fill="none"
+    stroke="url(#nlg4)" stroke-width="1.2" stroke-dasharray="5 4" opacity="0.35"/>
+  <g class="logo-rocket">
+    <g class="logo-exhaust">
+      <polygon points="100,136 93,160 100,152 107,160" fill="url(#nlg3)" opacity="0.9"/>
+    </g>
+    <path d="M100,58 C112,68 116,88 116,108 L100,116 L84,108 C84,88 88,68 100,58Z"
+      fill="url(#nlg2)"/>
+    <circle cx="100" cy="92" r="8" fill="#080A10" opacity="0.85"/>
+    <circle cx="100" cy="92" r="5" fill="url(#nlg1)" opacity="0.9"/>
+    <circle cx="98"  cy="90" r="2" fill="white" opacity="0.6"/>
+    <path d="M84,108 L72,122 L84,118Z"   fill="#00E5FF" opacity="0.8"/>
+    <path d="M116,108 L128,122 L116,118Z" fill="#BF5AF2" opacity="0.8"/>
+  </g>
+</svg>
+    <span class="nav-logo-text">
+      <span class="t1">De</span><span class="t2">ploy</span><span class="t3">()</span>
+    </span>
+  </a>
+
+  <button class="nav-hamburger" (click)="toggleMenu()" [class.open]="menuOpen">
+    <span></span><span></span><span></span>
+  </button>
+
+  <ul class="nav-links" [class.open]="menuOpen">
+    <li><a (click)="scrollTo('features')">// features</a></li>
+    <li><a (click)="scrollTo('stats')">// stats</a></li>
+    <li><a (click)="goToDocs()">// docs</a></li>
+  </ul>
+
+  @if (authService.isLoggedIn()) {
+  <div class="nav-user" (click)="goToChat()">
+    <div class="nav-avatar">{{ getUserInitials() }}</div>
+    <span class="nav-username">{{ authService.currentUser()?.name }}</span>
+    <span class="nav-user-hint">→ chat</span>
+  </div>
+  } @else {
+    <button class="hide-mobile" (click)="goToAuth()">
+      Iniciar sesión →
+    </button>
+  }
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+
+  <div class="badge">
+    <span class="badge-dot"></span>
+    &gt;_ v2.0.beta &nbsp;&bull;&nbsp; Now in Production
+  </div>
+
+  
+  <svg class="hero-logo-svg" viewBox="0 0 200 200" fill="none" style="overflow:visible">
+  <defs>
+    <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#BF5AF2"/>
+    </linearGradient>
+    <linearGradient id="lg2" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%"   stop-color="#FF9F40"/>
+      <stop offset="60%"  stop-color="#FFE033"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="lg3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#BF5AF2" stop-opacity="0"/>
+      <stop offset="40%"  stop-color="#FF9F40" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#FF5F57" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="lg4" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#BF5AF2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Glow fondo -->
+  <circle class="logo-glow" cx="100" cy="100" r="78" fill="none"
+    stroke="url(#lg1)" stroke-width="20" opacity="0.12"/>
+
+  <!-- Hexágono exterior rotatorio -->
+  <g class="logo-ring-outer">
+    <polygon points="100,18 172,59 172,141 100,182 28,141 28,59"
+      fill="none" stroke="url(#lg1)" stroke-width="1.5" opacity="0.7"/>
+    <circle cx="100" cy="18"  r="3" fill="#00E5FF"/>
+    <circle cx="172" cy="59"  r="3" fill="#BF5AF2"/>
+    <circle cx="172" cy="141" r="3" fill="#00E5FF"/>
+    <circle cx="100" cy="182" r="3" fill="#BF5AF2"/>
+    <circle cx="28"  cy="141" r="3" fill="#00E5FF"/>
+    <circle cx="28"  cy="59"  r="3" fill="#BF5AF2"/>
+  </g>
+
+  <!-- Anillo interior con partículas -->
+  <g class="logo-ring-inner">
+    <circle cx="100" cy="100" r="56" fill="none"
+      stroke="url(#lg4)" stroke-width="1" stroke-dasharray="6 4" opacity="0.5"/>
+    <circle class="logo-p1" cx="100" cy="44"  r="4" fill="#00E5FF" opacity="0.9"/>
+    <circle class="logo-p2" cx="148" cy="72"  r="3" fill="#FFE033" opacity="0.8"/>
+    <circle class="logo-p3" cx="148" cy="128" r="4" fill="#BF5AF2" opacity="0.9"/>
+    <circle class="logo-p4" cx="100" cy="156" r="3" fill="#32D74B" opacity="0.8"/>
+    <circle class="logo-p5" cx="52"  cy="128" r="4" fill="#FF9F40" opacity="0.9"/>
+    <circle class="logo-p6" cx="52"  cy="72"  r="3" fill="#00E5FF" opacity="0.8"/>
+  </g>
+
+  <!-- Brackets < > -->
+  <text x="24"  y="108" font-family="JetBrains Mono,monospace" font-size="22"
+    font-weight="800" fill="#00E5FF" opacity="0.6" text-anchor="middle">&lt;</text>
+  <text x="176" y="108" font-family="JetBrains Mono,monospace" font-size="22"
+    font-weight="800" fill="#BF5AF2" opacity="0.6" text-anchor="middle">&gt;</text>
+
+  <!-- Cohete -->
+  <g class="logo-rocket">
+    <g class="logo-exhaust">
+      <polygon points="100,136 94,158 100,152 106,158" fill="url(#lg3)" opacity="0.95"/>
+      <polygon points="100,140 97,162 100,156 103,162" fill="#FF9F40" opacity="0.6"/>
+    </g>
+    <path d="M100,58 C112,68 116,88 116,108 L100,116 L84,108 C84,88 88,68 100,58Z"
+      fill="url(#lg2)"/>
+    <circle cx="100" cy="92" r="8" fill="#080A10" opacity="0.85"/>
+    <circle cx="100" cy="92" r="5" fill="url(#lg1)" opacity="0.9"/>
+    <circle cx="98"  cy="90" r="2" fill="white" opacity="0.6"/>
+    <path d="M84,108 L72,122 L84,118Z"   fill="#00E5FF" opacity="0.8"/>
+    <path d="M116,108 L128,122 L116,118Z" fill="#BF5AF2" opacity="0.8"/>
+    <path d="M100,58 L96,68 L100,64 L104,68Z" fill="white" opacity="0.9"/>
+  </g>
+
+  <!-- Speed lines -->
+  <line x1="58"  y1="88"  x2="44"  y2="88"  stroke="#00E5FF" stroke-width="1" opacity="0.3"/>
+  <line x1="56"  y1="100" x2="40"  y2="100" stroke="#BF5AF2" stroke-width="1" opacity="0.2"/>
+  <line x1="58"  y1="112" x2="44"  y2="112" stroke="#00E5FF" stroke-width="1" opacity="0.3"/>
+  <line x1="142" y1="88"  x2="156" y2="88"  stroke="#00E5FF" stroke-width="1" opacity="0.3"/>
+  <line x1="144" y1="100" x2="160" y2="100" stroke="#BF5AF2" stroke-width="1" opacity="0.2"/>
+  <line x1="142" y1="112" x2="156" y2="112" stroke="#00E5FF" stroke-width="1" opacity="0.3"/>
+</svg>
+
+  <!-- Nombre en una sola línea centrada -->
+  <div class="hero-name">
+    <span class="d">D</span><span class="e">e</span><span class="p">p</span><span class="l">l</span><span class="o">o</span><span class="y">y</span><span class="cur">_</span>
+  </div>
+
+  <div class="hero-code-line">
+    <span class="kw-ret">return</span>
+    <span class="kw-str">"El futuro"</span>;
+  </div>
+
+  <div class="hero-closing-brace">&#125;</div>
+
+  <p class="hero-sub">
+    La IA que <span class="hl-c">entiende</span> tu código,
+    <span class="hl-v">optimiza</span> tu infraestructura
+    y <span class="hl-g">despliega</span> sin límites.
+  </p>
+
+  <div class="hero-btns">
+  <button class="btn-primary" (click)="goToChat()">
+    &lt;/&gt; Probar Deploy AI
+  </button>
+  <button class="btn-secondary" (click)="goToDocs()">
+  Ver Documentación →
+  </button>
+  </div>
+
+  <div class="hero-cards">
+    <div class="code-card">
+      <div class="cc-bar">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      </div>
+      <div class="cc-body">
+        <div><span class="ln">01</span><span class="kw">import</span> <span class="wh">&#123; Deploy &#125;</span> <span class="kw">from</span> <span class="str">"&#64;ai/deploy"</span>;</div>
+        <div><span class="ln">02</span></div>
+        <div><span class="ln">03</span><span class="kw">const</span> <span class="fn">app</span> <span class="wh">= Deploy.create(&#123;</span></div>
+        <div><span class="ln">04</span>&nbsp;&nbsp;<span class="fn">name</span><span class="wh">: </span><span class="str">"my-awesome-app"</span><span class="wh">,</span></div>
+        <div><span class="ln">05</span>&nbsp;&nbsp;<span class="fn">version</span><span class="wh">: </span><span class="num">2.0</span><span class="wh">,</span></div>
+        <div><span class="ln">06</span>&nbsp;&nbsp;<span class="fn">autoScale</span><span class="wh">: </span><span class="cm">true</span></div>
+        <div><span class="ln">07</span><span class="wh">&#125;);</span></div>
+      </div>
+    </div>
+    <div class="code-card">
+      <div class="cc-bar">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      </div>
+      <div class="cc-body">
+        <div><span class="ln">01</span><span class="kw">function</span> <span class="fn">deployAI</span><span class="wh">() &#123;</span></div>
+        <div><span class="ln">02</span>&nbsp;&nbsp;<span class="fn">console</span><span class="wh">.</span><span class="fn">log</span><span class="wh">(</span><span class="str">"🚀 Deploying..."</span><span class="wh">);</span></div>
+        <div><span class="ln">03</span>&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">AI</span><span class="wh">.</span><span class="fn">optimize</span><span class="wh">(</span></div>
+        <div><span class="ln">04</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">performance</span><span class="wh">: </span><span class="num">100</span><span class="wh">,</span></div>
+        <div><span class="ln">05</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">efficiency</span><span class="wh">: </span><span class="str">'max'</span></div>
+        <div><span class="ln">06</span>&nbsp;&nbsp;<span class="wh">);</span></div>
+        <div><span class="ln">07</span><span class="wh">&#125;</span></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── FEATURES ── -->
+<section id="features">
+  <div class="sec-badge">// Características principales</div>
+  <h2 class="sec-title">
+    <span class="c1">class</span>
+    <span class="c2"> Features</span>
+    <span class="c3"> &#123;</span>
+  </h2>
+  <p class="sec-sub">Cada función diseñada para que tu código vuele. Sin fricción, sin límites.</p>
+
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon bg-cyan">⚡</div>
+      <div class="feat-name col-cyan">deployFast()</div>
+      <p class="feat-desc">Despliegue instantáneo con optimización automática. Sin configuración, solo código.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon bg-violet">✦</div>
+      <div class="feat-name col-violet">if (intelligent)</div>
+      <p class="feat-desc">IA que aprende de tus patrones y predice optimizaciones antes de que las necesites.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon bg-yellow">&gt;_</div>
+      <div class="feat-name col-yellow">const autoScale =</div>
+      <p class="feat-desc">Escalado automático basado en demanda real. De 0 a millones sin parpadear.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon bg-orange">⎇</div>
+      <div class="feat-name col-orange">git push --live</div>
+      <p class="feat-desc">Integración continua nativa. Cada commit es una oportunidad de mejora.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon bg-green">◈</div>
+      <div class="feat-name col-green">return data()</div>
+      <p class="feat-desc">Base de datos distribuida con latencia &lt;10ms. Tus datos, en todas partes.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon bg-cyan">☁</div>
+      <div class="feat-name col-cyan">async cloud()</div>
+      <p class="feat-desc">Infraestructura global sin fronteras. Deploy una vez, funciona en todo el mundo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<section id="stats">
+  <div class="stats-box">
+    <div class="stat-item">
+      <div class="stat-val col-cyan">&lt; 10ms</div>
+      <div class="stat-label">Latencia Global</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val col-green">99.99%</div>
+      <div class="stat-label">Uptime SLA</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val col-violet">&infin;</div>
+      <div class="stat-label">Escalabilidad</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA FINAL ── -->
+<section id="cta">
+  <div class="cta-code">
+    <div><span class="col-violet">while</span> <span class="col-cyan">(true)</span> <span class="col-white">&#123;</span></div>
+    <div class="cta-indent"><span class="col-yellow">deploy</span><span class="col-white">();</span></div>
+    <div><span class="col-white">&#125;</span></div>
+  </div>
+  <p class="cta-sub">Únete a miles de developers que ya están desplegando el futuro.</p>
+  <button class="btn-gradient" (click)="goToChat()">🚀 Empezar Ahora &rarr;</button>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p>// Deploy AI &bull; v2.0.beta &bull; Built with ❤️ and coffee</p>
+  <p class="footer-copy">&copy; 2025 Deploy. All rights reserved.</p>
+</footer>

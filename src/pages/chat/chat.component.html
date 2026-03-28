@@ -1,0 +1,203 @@
+<div class="chat-layout">
+
+  <!-- Overlay móvil para cerrar sidebar -->
+  @if (sidebarOpen()) {
+    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+  }
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" [class.open]="sidebarOpen()">
+    <div class="sidebar-header">
+      <button class="back-btn" (click)="goHome()">
+        <span class="back-icon">←</span> Deploy.ai
+      </button>
+    </div>
+
+    <!-- Selector de modo -->
+    <div class="mode-section">
+      <p class="mode-label">// modo</p>
+      <div class="mode-list">
+        <button
+          class="mode-btn"
+          [class.active]="selectedMode() === 'generate'"
+          (click)="setMode('generate'); closeSidebar()">
+          <span class="mode-icon">⚡</span>
+          <span>Generar código</span>
+        </button>
+        <button
+          class="mode-btn"
+          [class.active]="selectedMode() === 'analyze'"
+          (click)="setMode('analyze'); closeSidebar()">
+          <span class="mode-icon">🔍</span>
+          <span>Analizar código</span>
+        </button>
+        <button
+          class="mode-btn"
+          [class.active]="selectedMode() === 'explain'"
+          (click)="setMode('explain'); closeSidebar()">
+          <span class="mode-icon">📖</span>
+          <span>Explicar concepto</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sugerencias -->
+    <div class="suggestions-section">
+      <p class="mode-label">// sugerencias</p>
+      <div class="suggestions-list">
+        @for (suggestion of suggestions[selectedMode()]; track $index) {
+          <button class="suggestion-btn" (click)="setSuggestion(suggestion); closeSidebar()">
+            {{ suggestion }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Historial -->
+    <div class="history-section">
+      <p class="mode-label">// historial</p>
+
+      <button class="new-chat-btn" (click)="newConversation(); closeSidebar()">
+        + Nueva conversación
+      </button>
+
+      <div class="history-list">
+        @for (conv of conversations(); track conv.id) {
+          <div
+            class="history-item"
+            [class.active]="currentConversationId() === conv.id"
+            (click)="loadConversation(conv); closeSidebar()">
+            <span class="history-title">{{ conv.title }}</span>
+            <button class="history-delete" (click)="deleteConversation(conv.id, $event)">×</button>
+          </div>
+        }
+
+        @if (conversations().length === 0) {
+          <p class="history-empty">Sin conversaciones guardadas</p>
+        }
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <span class="version-badge">&gt;_ v2.0.beta</span>
+    </div>
+  </aside>
+
+  <!-- ── ÁREA PRINCIPAL ── -->
+  <main class="chat-main">
+
+    <!-- Header -->
+    <header class="chat-header">
+
+      <!-- Botón hamburguesa solo en móvil -->
+      <button class="sidebar-toggle" (click)="toggleSidebar()">☰</button>
+
+      <div class="chat-header-info">
+        <span class="chat-mode-tag">
+          @switch (selectedMode()) {
+            @case ('generate') { <span>⚡ Generando código</span> }
+            @case ('analyze')  { <span>🔍 Analizando código</span> }
+            @case ('explain')  { <span>📖 Explicando conceptos</span> }
+            @default           { <span>⚡ Generando código</span> }
+          }
+        </span>
+      </div>
+
+      <!-- Avatar con dropdown -->
+      <div class="user-menu" (click)="toggleUserMenu()" [class.open]="userMenuOpen()">
+        <div class="user-avatar">{{ getUserInitials() }}</div>
+        <span class="user-name">{{ authService.currentUser()?.name }}</span>
+        <span class="user-chevron">▾</span>
+
+        @if (userMenuOpen()) {
+          <div class="user-dropdown">
+            <div class="user-dropdown-header">
+              <div class="dropdown-avatar">{{ getUserInitials() }}</div>
+              <div>
+                <div class="dropdown-name">{{ authService.currentUser()?.name }}</div>
+                <div class="dropdown-email">{{ authService.currentUser()?.email }}</div>
+              </div>
+            </div>
+            <div class="user-dropdown-divider"></div>
+            <button class="dropdown-item" (click)="logout(); $event.stopPropagation()">
+              <span>⎋</span> Cerrar sesión
+            </button>
+          </div>
+        }
+      </div>
+    </header>
+
+    <!-- Mensajes -->
+    <div class="messages-area" #messagesContainer>
+
+      @if (messages().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">&#123; &#125;</div>
+          <h2 class="empty-title">¿Qué construimos hoy?</h2>
+          <p class="empty-sub">
+            Selecciona un modo en el panel izquierdo o escribe directamente tu petición.
+          </p>
+        </div>
+      }
+
+      @for (message of messages(); track message.id) {
+        <div
+          class="message"
+          [class.message-user]="message.role === 'user'"
+          [class.message-ai]="message.role === 'assistant'">
+
+          <div class="message-avatar">
+            @if (message.role === 'user') {
+              <span>U</span>
+            } @else {
+              <span>&gt;_</span>
+            }
+          </div>
+
+          <div class="message-body">
+            @if (message.isLoading) {
+              <div class="loading-dots">
+                <span></span><span></span><span></span>
+              </div>
+            } @else {
+              <div class="message-content markdown-body"
+                   [innerHTML]="renderMarkdown(message.content)">
+              </div>
+            }
+            <span class="message-time">
+              {{ message.timestamp | date:'HH:mm' }}
+            </span>
+          </div>
+
+        </div>
+      }
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <div class="input-wrapper">
+        <textarea
+          class="chat-input"
+          [value]="userInput()"
+          (input)="onInput($event)"
+          (keydown.enter)="handleEnter($any($event))"
+          placeholder="Escribe tu código, pregunta o descripción..."
+          rows="1"
+          #chatInput>
+        </textarea>
+        <button
+          class="send-btn"
+          [disabled]="!canSend()"
+          (click)="sendMessage()">
+          @if (isLoading()) {
+            <span class="send-loading"></span>
+          } @else {
+            <span>→</span>
+          }
+        </button>
+      </div>
+      <p class="input-hint">Enter para enviar &nbsp;·&nbsp; Shift+Enter para nueva línea</p>
+    </div>
+
+  </main>
+</div>

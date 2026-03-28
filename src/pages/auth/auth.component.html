@@ -1,0 +1,103 @@
+<div class="auth-layout">
+
+  <canvas #bgCanvas id="bg-canvas-auth"></canvas>
+
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <button class="auth-back" (click)="goHome()">← Deploy.ai</button>
+
+    <div class="auth-header">
+      <div class="auth-title">
+        @if (isLogin()) {
+          <span class="kw">function</span>
+          <span class="fn"> login</span>
+          <span class="wh">() &#123;</span>
+        } @else {
+          <span class="kw">function</span>
+          <span class="fn"> register</span>
+          <span class="wh">() &#123;</span>
+        }
+      </div>
+      <p class="auth-sub">
+        @if (isLogin()) {
+          <span>Bienvenido de vuelta, developer</span>
+        } @else {
+          <span>Únete a Deploy AI</span>
+        }
+      </p>
+    </div>
+
+    <!-- Error -->
+    @if (error()) {
+      <div class="auth-error">
+        <span>⚠ {{ error() }}</span>
+      </div>
+    }
+
+    <!-- Formulario -->
+    <div class="auth-form">
+
+      @if (!isLogin()) {
+        <div class="form-group">
+          <label class="form-label">// nombre</label>
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="name"
+            placeholder="Tu nombre"
+            autocomplete="name"/>
+        </div>
+      }
+
+      <div class="form-group">
+        <label class="form-label">// email</label>
+        <input
+          class="form-input"
+          type="email"
+          [(ngModel)]="email"
+          placeholder="tu@email.com"
+          autocomplete="email"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">// contraseña</label>
+        <input
+          class="form-input"
+          type="password"
+          [(ngModel)]="password"
+          placeholder="Mínimo 6 caracteres"
+          (keydown.enter)="submit()"
+          autocomplete="current-password"/>
+      </div>
+
+      <button
+        class="auth-submit"
+        [disabled]="isLoading()"
+        (click)="submit()">
+        @if (isLoading()) {
+          <span class="submit-loading"></span>
+          <span>Conectando...</span>
+        } @else if (isLogin()) {
+          <span>→ Iniciar sesión</span>
+        } @else {
+          <span>→ Crear cuenta</span>
+        }
+      </button>
+
+    </div>
+
+    <div class="auth-closing-brace">&#125;</div>
+
+    <div class="auth-toggle">
+      @if (isLogin()) {
+        <span>¿No tienes cuenta?</span>
+        <button (click)="toggleMode()">Regístrate</button>
+      } @else {
+        <span>¿Ya tienes cuenta?</span>
+        <button (click)="toggleMode()">Inicia sesión</button>
+      }
+    </div>
+
+  </div>
+</div>

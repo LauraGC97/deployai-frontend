@@ -1,13 +1,38 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>DeployAi</title>
+  <title>Deploy AI — Asistente de Programación</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Deploy AI — Tu asistente de inteligencia artificial para generar, analizar y explicar código.">
+  <meta property="og:title" content="Deploy AI — Asistente de Programación">
+  <meta property="og:description" content="Genera código, analiza errores y aprende programación con IA.">
+  <meta name="theme-color" content="#080A10">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body { background: #080A10; }
+  </style>
 </head>
-<body>
+<body style="background:#080A10;margin:0">
+  <script>
+  function copyCode(btn) {
+    const code = btn.closest('.code-block-wrapper').querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      const label = btn.querySelector('.copy-label');
+      label.textContent = '¡Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        label.textContent = 'Copiar';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+  
   <app-root></app-root>
+ 
 </body>
 </html>
