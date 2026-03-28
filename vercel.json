@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npx ng build",
+  "buildCommand": "npm install -g @angular/cli && ng build",
   "outputDirectory": "dist/DeployAi",
   "framework": null,
   "rewrites": [
