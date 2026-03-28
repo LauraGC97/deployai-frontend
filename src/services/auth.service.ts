@@ -21,7 +21,7 @@ export class AuthService {
 
   private readonly http   = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly API    = 'http://localhost:3000/api/auth';
+  private readonly API = 'https://deployai-backend.onrender.com/api/auth';
   private readonly TOKEN_KEY = 'deploy_token';
   private readonly USER_KEY  = 'deploy_user';
 

@@ -10,7 +10,7 @@ export class ClaudeService {
 
   private readonly http        = inject(HttpClient);
   private readonly authService = inject(AuthService);
-  private readonly API_URL     = 'http://localhost:3000/api/chat';
+  private readonly API_URL = 'https://deployai-backend.onrender.com/api/chat';
 
   sendMessage(request: ChatRequest): Observable<string> {
     const token   = this.authService.getToken();
