@@ -47,92 +47,117 @@ export class HomeComponent implements AfterViewInit {
   this.router.navigate(['/docs']);
   }
 
-  @ViewChild('bgCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('bgCanvas') bgCanvas!: ElementRef<HTMLCanvasElement>;
 
   ngAfterViewInit() {
-    this.initBackground();
+    setTimeout(() => this.initBackground(), 0);
   }
 
-  private initBackground() {
-    const canvas = this.canvasRef.nativeElement;
-    const ctx    = canvas.getContext('2d')!;
+  private initBackground(): void {
+  const canvas = this.bgCanvas.nativeElement;
+  const ctx    = canvas.getContext('2d')!;
 
-    const resize = () => {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
+  const resize = () => {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
+  resize();
+  window.addEventListener('resize', resize);
 
-    const snippets = [
-      'const', 'let', 'function', 'return', 'if', 'else',
-      'for', 'while', 'import', 'export', 'async', 'await',
-      'class', '=>', '{}', '[]', '()', '&&', '||', '===',
-      'deploy()', 'AI.optimize()', 'autoScale', 'git push',
-      'npm run', '#00E5FF', '#BF5AF2', 'v2.0', 'true',
-      'false', 'null', '200 OK', '404', 'git commit',
-      'npm install', 'build', 'run dev'
-    ];
+  const SYMBOLS = '01</>{}[]();=+*&|=>const let fn'.split('');
 
-    const COLORS = ['#00E5FF', '#BF5AF2', '#FFE033', '#32D74B', '#FF9F40'];
-    const isMobile   = window.innerWidth < 640;
-    const PART_COUNT = isMobile ? 28 : 55;
+  const streams = Array.from({ length: 30 }, () => ({
+    x:       Math.random() * window.innerWidth,
+    y:       Math.random() * -600,
+    speed:   0.3 + Math.random() * 0.5,
+    chars:   Array.from({ length: 16 }, () =>
+               SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]),
+    timer:   0,
+    color:   [[34,211,238],[168,85,247],[16,185,129]][Math.floor(Math.random() * 3)],
+    opacity: 0.05 + Math.random() * 0.07,
+  }));
 
-    const particles = Array.from({ length: PART_COUNT }, () => ({
-      x:     Math.random() * window.innerWidth,
-      y:     Math.random() * window.innerHeight,
-      vy:   -(0.15 + Math.random() * 0.4),
-      vx:    (Math.random() - 0.5) * 0.2,
-      text:  snippets[Math.floor(Math.random() * snippets.length)],
-      alpha: 0.03 + Math.random() * 0.065,
-      size:  isMobile ? 9 + Math.random() * 3 : 10 + Math.random() * 4,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)]
-    }));
+  const waves = [
+    { y: 0.25, amp: 20, freq: 0.007, speed: 0.004, color: [34,211,238],  alpha: 0.06 },
+    { y: 0.50, amp: 28, freq: 0.005, speed: 0.003, color: [168,85,247],  alpha: 0.05 },
+    { y: 0.72, amp: 16, freq: 0.010, speed: 0.005, color: [16,185,129],  alpha: 0.04 },
+    { y: 0.88, amp: 22, freq: 0.006, speed: 0.002, color: [253,224,71],  alpha: 0.03 },
+  ];
 
-    const allWaves = [
-      { amp: 45, freq: 0.007, speed: 0.0035, yRatio: 0.28, color: 'rgba(0,229,255,0.045)',  phase: 0   },
-      { amp: 60, freq: 0.005, speed: 0.0025, yRatio: 0.50, color: 'rgba(191,90,242,0.035)', phase: 2.1 },
-      { amp: 35, freq: 0.011, speed: 0.005,  yRatio: 0.70, color: 'rgba(50,215,75,0.03)',   phase: 4.2 },
-      { amp: 50, freq: 0.006, speed: 0.002,  yRatio: 0.85, color: 'rgba(255,224,51,0.025)', phase: 1.5 },
-    ];
-    const waves = isMobile ? allWaves.slice(0, 2) : allWaves;
+  let t = 0;
 
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const draw = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      waves.forEach(w => {
-        w.phase += w.speed;
-        ctx.beginPath();
-        ctx.strokeStyle = w.color;
-        ctx.lineWidth   = 1.5;
-        const baseY = canvas.height * w.yRatio;
-        for (let x = 0; x <= canvas.width; x += 3) {
-          const y = baseY + Math.sin(x * w.freq + w.phase) * w.amp;
-          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        }
-        ctx.stroke();
+    // ── ONDAS ──
+    waves.forEach(w => {
+      const [r, g, b] = w.color;
+      const cy = canvas.height * w.y;
+
+      ctx.beginPath();
+      for (let x = 0; x <= canvas.width; x += 2) {
+        const y = cy
+          + Math.sin(x * w.freq + t * w.speed * 100) * w.amp
+          + Math.sin(x * w.freq * 0.5 - t * w.speed * 60) * w.amp * 0.4;
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(${r},${g},${b},${w.alpha})`;
+      ctx.lineWidth   = 1.2;
+      ctx.stroke();
+
+      // Brillo bajo la ola
+      const grad = ctx.createLinearGradient(0, cy - w.amp, 0, cy + w.amp * 3);
+      grad.addColorStop(0, `rgba(${r},${g},${b},${w.alpha * 0.35})`);
+      grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+
+      ctx.beginPath();
+      for (let x = 0; x <= canvas.width; x += 2) {
+        const y = cy
+          + Math.sin(x * w.freq + t * w.speed * 100) * w.amp
+          + Math.sin(x * w.freq * 0.5 - t * w.speed * 60) * w.amp * 0.4;
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.lineTo(canvas.width, cy + w.amp * 4);
+      ctx.lineTo(0, cy + w.amp * 4);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+    });
+
+    // ── STREAMS DE CÓDIGO ──
+    ctx.font = '11px JetBrains Mono, monospace';
+    streams.forEach(s => {
+      s.y += s.speed;
+      if (s.y > canvas.height + 300) {
+        s.y     = -200 - Math.random() * 400;
+        s.x     = Math.random() * canvas.width;
+        s.chars = s.chars.map(() =>
+          SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]);
+      }
+
+      s.timer++;
+      if (s.timer % 25 === 0) {
+        const idx    = Math.floor(Math.random() * s.chars.length);
+        s.chars[idx] = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+      }
+
+      const [r, g, b] = s.color;
+      s.chars.forEach((ch, i) => {
+        const cy    = s.y + i * 15;
+        const fade  = Math.max(0, 1 - i / s.chars.length);
+        const alpha = s.opacity * fade;
+        if (alpha < 0.004) return;
+
+        const bright = i === 0 ? Math.min(alpha * 2.5, 0.3) : alpha;
+        ctx.fillStyle = `rgba(${r},${g},${b},${bright})`;
+        ctx.fillText(ch, s.x, cy);
       });
+    });
 
-      particles.forEach(p => {
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle   = p.color;
-        ctx.font        = `${p.size}px 'JetBrains Mono', monospace`;
-        ctx.fillText(p.text, p.x, p.y);
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.y < -30) {
-          p.y    = canvas.height + 20;
-          p.x    = Math.random() * canvas.width;
-          p.text = snippets[Math.floor(Math.random() * snippets.length)];
-        }
-        if (p.x < -120)               p.x = canvas.width + 10;
-        if (p.x > canvas.width + 120) p.x = -10;
-      });
-
-      ctx.globalAlpha = 1;
-      requestAnimationFrame(draw);
-    };
+    t += 0.016;
+    requestAnimationFrame(draw);
+  };
 
     draw();
   }
-}
+}  

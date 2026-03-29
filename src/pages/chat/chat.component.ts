@@ -21,7 +21,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './chat.component.css',
   encapsulation: ViewEncapsulation.None
 })
-export class ChatComponent implements AfterViewChecked {
+export class ChatComponent implements AfterViewChecked, OnInit {
 
   private readonly claudeService       = inject(ClaudeService);
   private readonly markdownService     = inject(MarkdownService);
@@ -104,9 +104,20 @@ export class ChatComponent implements AfterViewChecked {
   // ── CONVERSACIONES ─────────────────────────────────────────────────────────
 
   ngOnInit(): void {
-  // Recarga el historial del usuario actual al entrar al chat
   this.conversationService.reloadForUser();
-  }
+  (window as any)['copyCode'] = (btn: HTMLElement) => {
+    const code = btn.closest('.code-block-wrapper')?.querySelector('code')?.innerText ?? '';
+    navigator.clipboard.writeText(code).then(() => {
+      const label = btn.querySelector('.copy-label') as HTMLElement;
+      if (label) label.textContent = '¡Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        if (label) label.textContent = 'Copiar';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  };
+}
   
   get conversations() {
     return this.conversationService.conversations;
