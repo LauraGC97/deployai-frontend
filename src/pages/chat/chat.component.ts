@@ -121,11 +121,11 @@ export class ChatComponent implements AfterViewChecked, OnInit, OnDestroy {
   ngOnInit(): void {
     window.scrollTo({ top: 0, behavior: 'instant' });
     this.conversationService.reloadForUser();
-    document.addEventListener('click', this.copyHandler);
+    document.addEventListener('mousedown', this.copyHandler);
   }
 
   ngOnDestroy(): void {
-    document.removeEventListener('click', this.copyHandler);
+    document.removeEventListener('mousedown', this.copyHandler);
   }
 
   ngAfterViewChecked(): void {
