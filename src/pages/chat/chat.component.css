@@ -338,7 +338,7 @@
   padding: 13px 16px;
   color: #F0F9FF;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.6;
   resize: none;
   outline: none;
@@ -347,8 +347,20 @@
   min-height: 46px;
   max-height: 160px;
 }
-.chat-input::placeholder { color: #2a3040; }
+.chat-input::placeholder { 
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #2a3040; }
 .chat-input:focus { border-color: rgba(34,211,238,0.3); }
+
+@media (max-width: 768px) {
+  .chat-input {
+    font-size: 16px;
+  }
+}
 
 .send-btn {
   width: 44px; height: 44px;

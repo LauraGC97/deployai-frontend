@@ -1,6 +1,6 @@
 import {
   Component, inject, signal, computed,
-  ViewChild, ElementRef, AfterViewChecked, OnInit, HostListener, ViewEncapsulation
+  ViewChild, ElementRef, AfterViewChecked, OnInit, OnDestroy, HostListener, ViewEncapsulation
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -21,7 +21,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './chat.component.css',
   encapsulation: ViewEncapsulation.None
 })
-export class ChatComponent implements AfterViewChecked, OnInit {
+export class ChatComponent implements AfterViewChecked, OnInit, OnDestroy {
 
   private readonly claudeService       = inject(ClaudeService);
   private readonly markdownService     = inject(MarkdownService);
@@ -30,21 +30,20 @@ export class ChatComponent implements AfterViewChecked, OnInit {
   private readonly conversationService = inject(ConversationService);
   readonly authService = inject(AuthService);
 
+
   @HostListener('document:click', ['$event'])
-    onDocumentClick(event: MouseEvent): void {
-      const target = event.target as HTMLElement;
-      if (!target.closest('.user-menu')) {
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.user-menu')) {
       this.userMenuOpen.set(false);
     }
   }
 
   @ViewChild('chatInput') private chatInput!: ElementRef<HTMLTextAreaElement>;
 
-    onInput(event: Event): void {
-      const textarea = event.target as HTMLTextAreaElement;
-      this.userInput.set(textarea.value);
-
-      // Auto-resize
+  onInput(event: Event): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    this.userInput.set(textarea.value);
     textarea.style.height = 'auto';
     textarea.style.height = Math.min(textarea.scrollHeight, 160) + 'px';
   }
@@ -92,7 +91,42 @@ export class ChatComponent implements AfterViewChecked, OnInit {
     ]
   };
 
+  // ── EVENT DELEGATION para botón copiar ────────────────────────────────────
+
+  private copyHandler = (event: Event) => {
+    const btn = (event.target as HTMLElement).closest('.copy-btn') as HTMLElement;
+    if (!btn) return;
+    const code = btn.closest('.code-block-wrapper')?.querySelector('code')?.innerText ?? '';
+    navigator.clipboard.writeText(code).then(() => {
+      const label = btn.querySelector('.copy-label') as HTMLElement;
+      if (label) label.textContent = '¡Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        if (label) label.textContent = 'Copiar';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      // Fallback para navegadores sin clipboard API
+      const textarea = document.createElement('textarea');
+      textarea.value = code;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    });
+  };
+
   // ── LIFECYCLE ──────────────────────────────────────────────────────────────
+
+  ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    this.conversationService.reloadForUser();
+    document.addEventListener('click', this.copyHandler);
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('click', this.copyHandler);
+  }
 
   ngAfterViewChecked(): void {
     if (this.shouldScroll) {
@@ -103,22 +137,6 @@ export class ChatComponent implements AfterViewChecked, OnInit {
 
   // ── CONVERSACIONES ─────────────────────────────────────────────────────────
 
-  ngOnInit(): void {
-  this.conversationService.reloadForUser();
-  (window as any)['copyCode'] = (btn: HTMLElement) => {
-    const code = btn.closest('.code-block-wrapper')?.querySelector('code')?.innerText ?? '';
-    navigator.clipboard.writeText(code).then(() => {
-      const label = btn.querySelector('.copy-label') as HTMLElement;
-      if (label) label.textContent = '¡Copiado!';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        if (label) label.textContent = 'Copiar';
-        btn.classList.remove('copied');
-      }, 2000);
-    });
-  };
-}
-  
   get conversations() {
     return this.conversationService.conversations;
   }
@@ -144,29 +162,29 @@ export class ChatComponent implements AfterViewChecked, OnInit {
     }
   }
 
-  // ── USER ──────────────────────────────────────────────────────────────
+  // ── USER ───────────────────────────────────────────────────────────────────
 
   userMenuOpen = signal<boolean>(false);
 
   toggleUserMenu(): void {
-   this.userMenuOpen.update(v => !v);
+    this.userMenuOpen.update(v => !v);
   }
 
   getUserInitials(): string {
-   const name = this.authService.currentUser()?.name ?? '';
+    const name = this.authService.currentUser()?.name ?? '';
     return name
-     .split(' ')
-     .map(w => w[0])
-     .slice(0, 2)
-     .join('')
-     .toUpperCase();
+      .split(' ')
+      .map(w => w[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
   }
 
   logout(): void {
-   this.userMenuOpen.set(false);
-   this.newConversation();
-   this.authService.logout();
- }
+    this.userMenuOpen.set(false);
+    this.newConversation();
+    this.authService.logout();
+  }
 
   // ── MODO Y SUGERENCIAS ─────────────────────────────────────────────────────
 
@@ -208,12 +226,24 @@ export class ChatComponent implements AfterViewChecked, OnInit {
     this.isLoading.set(true);
     this.shouldScroll = true;
 
-    // Historial sin placeholder
+    setTimeout(() => {
+    if (this.chatInput?.nativeElement) {
+      this.chatInput.nativeElement.value = '';
+      this.chatInput.nativeElement.style.height = 'auto';
+      this.chatInput.nativeElement.style.height = '46px';
+      }
+    }, 0);
+
+    setTimeout(() => {
+      if (this.chatInput?.nativeElement) {
+        this.chatInput.nativeElement.focus();
+      }
+    }, 100);
+
     const history = this.messages()
       .filter(m => !m.isLoading)
       .map(m => ({ role: m.role, content: m.content }));
 
-    // System prompt + historial
     const requestMessages = [
       { role: 'user' as MessageRole,      content: this.systemPrompts[this.selectedMode()] },
       { role: 'assistant' as MessageRole, content: 'Entendido. Estoy listo para ayudarte.' },
@@ -232,7 +262,6 @@ export class ChatComponent implements AfterViewChecked, OnInit {
         this.isLoading.set(false);
         this.shouldScroll = true;
 
-        // Guarda o actualiza la conversación
         const currentId = this.currentConversationId();
         if (currentId) {
           this.conversationService.updateConversation(currentId, this.messages());
@@ -259,26 +288,27 @@ export class ChatComponent implements AfterViewChecked, OnInit {
 
   // ── NAVEGACIÓN ─────────────────────────────────────────────────────────────
 
-    goHome(): void {
-      this.router.navigate(['/']);
-    }
+  goHome(): void {
+    this.router.navigate(['/']);
+  }
 
-    sidebarOpen = signal<boolean>(false);
+  sidebarOpen = signal<boolean>(false);
 
-    toggleSidebar(): void {
-      this.sidebarOpen.update(v => !v);
-    }
+  toggleSidebar(): void {
+    this.sidebarOpen.update(v => !v);
+  }
 
-    closeSidebar(): void {
-      this.sidebarOpen.set(false);
-    }
+  closeSidebar(): void {
+    this.sidebarOpen.set(false);
+  }
 
-    handleEnter(event: Event): void {
-      const keyEvent = event as KeyboardEvent;
-        if (keyEvent.shiftKey) return;
-        event.preventDefault();
-          this.sendMessage();
-    }
+  handleEnter(event: Event): void {
+    const keyEvent = event as KeyboardEvent;
+    if (keyEvent.shiftKey) return;
+    event.preventDefault();
+    this.sendMessage();
+  }
+
   // ── HELPERS ────────────────────────────────────────────────────────────────
 
   renderMarkdown(content: string): SafeHtml {

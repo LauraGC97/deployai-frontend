@@ -13,6 +13,10 @@ export class DocsComponent {
 
   private readonly router = inject(Router);
 
+  ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
   // Sección activa del sidebar
   activeSection = signal<string>('installation');
   sidebarOpen = signal<boolean>(false);

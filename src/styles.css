@@ -862,3 +862,25 @@ app-auth {
   animation: blink 1s step-end infinite;
   font-size: 14px;
 }
+
+/* ── HIGHLIGHT.JS TEMA PERSONALIZADO ── */
+.hljs { background: transparent; color: #F0F9FF; }
+.hljs-keyword    { color: #A855F7; font-weight: bold; }
+.hljs-built_in   { color: #22D3EE; }
+.hljs-type       { color: #22D3EE; }
+.hljs-literal    { color: #10B981; }
+.hljs-number     { color: #F97316; }
+.hljs-string     { color: #FDE047; }
+.hljs-comment    { color: #4B5563; font-style: italic; }
+.hljs-function   { color: #22D3EE; }
+.hljs-title      { color: #22D3EE; }
+.hljs-params     { color: #F0F9FF; }
+.hljs-attr       { color: #22D3EE; }
+.hljs-variable   { color: #F0F9FF; }
+.hljs-tag        { color: #A855F7; }
+.hljs-name       { color: #22D3EE; }
+.hljs-selector-class { color: #FDE047; }
+.hljs-selector-id    { color: #F97316; }
+.hljs-property   { color: #22D3EE; }
+.hljs-operator   { color: #A855F7; }
+.hljs-punctuation { color: #6B7280; }

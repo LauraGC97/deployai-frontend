@@ -26,6 +26,10 @@ export class AuthComponent {
   email    = '';
   password = '';
 
+  ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
   toggleMode(): void {
     this.isLogin.update(v => !v);
     this.error.set('');
@@ -38,8 +42,8 @@ export class AuthComponent {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-    goHome(): void {
-      this.router.navigate(['/']);
+  goHome(): void {
+    this.router.navigate(['/']);
   }
 
 submit(): void {

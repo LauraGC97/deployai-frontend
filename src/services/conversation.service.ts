@@ -8,7 +8,7 @@ export interface Conversation {
   messages:  Message[];
   createdAt: Date;
   mode:      'generate' | 'analyze' | 'explain';
-  userId:    number; // ← vincula al usuario
+  userId:    number;
 }
 
 @Injectable({ providedIn: 'root' })
