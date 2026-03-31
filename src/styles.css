@@ -538,7 +538,7 @@ footer {
   footer { flex-direction: row; justify-content: space-between; text-align: left; }
 }
 footer p { color: var(--muted); font-size: 12px; font-family: 'JetBrains Mono', monospace; }
-.footer-copy { color: #4B5563 !important; }
+.footer-copy { color: #6B7280 !important; }
 
 /* =============================================
    ANIMACIONES
