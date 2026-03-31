@@ -89,9 +89,9 @@
 
 .mode-label {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: #6B7280;
-  letter-spacing: 2px;
+  font-size: 12x;
+  color: A0AEBE;
+  letter-spacing: 1.5px;
   margin-bottom: 10px;
 }
 
@@ -105,7 +105,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
   padding: 10px 12px;
-  color: #6B7280;
+  color: #8B9BB4;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 13px;
   cursor: pointer;
@@ -127,7 +127,7 @@
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 8px;
   padding: 10px 12px;
-  color: #6B7280;
+  color: #8B9BB4;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 12px;
   cursor: pointer;
@@ -537,7 +537,7 @@
 .history-delete {
   background: none;
   border: none;
-  color: #3D4A5C;
+  color: #8B9BB4;
   font-size: 16px;
   cursor: pointer;
   padding: 0 2px;
