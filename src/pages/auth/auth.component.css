@@ -72,7 +72,7 @@
 .form-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: #444;
+  color: #8B9BB4;
   letter-spacing: 1px;
 }
 
@@ -87,7 +87,7 @@
   outline: none;
   transition: border-color .2s;
 }
-.form-input::placeholder { color: #333; }
+.form-input::placeholder { color: #4B5563; }
 .form-input:focus { border-color: rgba(34,211,238,0.35); }
 
 .auth-submit {
@@ -95,7 +95,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: linear-gradient(90deg, #22D3EE, #A855F7);
+  background: linear-gradient(90deg, #A855F7, #22D3EE);
   color: #080A10;
   border: none;
   padding: 14px;

@@ -151,7 +151,7 @@ body {
   .hide-mobile {
     display: block;
     justify-self: end;
-    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    background: linear-gradient(90deg, var(--violet), var(--cyan));
     color: var(--black);
     border: none;
     padding: 9px 20px;
@@ -282,7 +282,7 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  background: linear-gradient(90deg, var(--violet), var(--cyan));
   color: var(--black);
   border: none;
   padding: 14px 24px;
@@ -504,7 +504,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  background: linear-gradient(90deg, var(--violet), var(--cyan));
   color: var(--black);
   border: none;
   padding: 15px 32px;
@@ -621,7 +621,7 @@ app-auth {
 .nav-avatar {
   width: 28px; height: 28px;
   border-radius: 6px;
-  background: linear-gradient(135deg, #22D3EE, #A855F7);
+  background: linear-gradient(135deg, #A855F7, #22D3EE);
   color: #080A10;
   font-family: 'JetBrains Mono', monospace;
   font-weight: 800;
