@@ -93,28 +93,64 @@ export class ChatComponent implements AfterViewChecked, OnInit, OnDestroy {
 
   // ── EVENT DELEGATION para botón copiar ────────────────────────────────────
 
-  private copyHandler = (event: Event) => {
-    const btn = (event.target as HTMLElement).closest('.copy-btn') as HTMLElement;
-    if (!btn) return;
-    const code = btn.closest('.code-block-wrapper')?.querySelector('code')?.innerText ?? '';
-    navigator.clipboard.writeText(code).then(() => {
-      const label = btn.querySelector('.copy-label') as HTMLElement;
-      if (label) label.textContent = '¡Copiado!';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        if (label) label.textContent = 'Copiar';
-        btn.classList.remove('copied');
-      }, 2000);
-    }).catch(() => {
-      // Fallback para navegadores sin clipboard API
-      const textarea = document.createElement('textarea');
-      textarea.value = code;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textarea);
-    });
+ copyHandler = (event: Event) => {
+  const target = event.target as HTMLElement;
+  const btn = target.closest('.copy-btn') as HTMLElement;
+  
+  if (!btn) return;
+  const codeBlock = btn.closest('.code-block-wrapper')?.querySelector('code');
+  const code = codeBlock?.textContent ?? '';
+
+  if (!code) return;
+
+  const showSuccessFeedback = () => {
+    const label = btn.querySelector('.copy-label') as HTMLElement;
+    if (label) label.textContent = '¡Copiado!';
+    btn.classList.add('copied');
+    
+    setTimeout(() => {
+      if (label) label.textContent = 'Copiar';
+      btn.classList.remove('copied');
+    }, 2000);
   };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code)
+      .then(() => {
+        showSuccessFeedback();
+      })
+      .catch((err) => {
+        console.warn('Fallo en clipboard API, intentando fallback...', err);
+        this.fallbackCopy(code, showSuccessFeedback);
+      });
+  } else {
+    this.fallbackCopy(code, showSuccessFeedback);
+  }
+};
+
+private fallbackCopy(code: string, onSuccess: () => void) {
+  const textarea = document.createElement('textarea');
+  textarea.value = code;
+  textarea.style.position = 'fixed';
+  textarea.style.top = '0';
+  textarea.style.left = '0';
+  textarea.style.opacity = '0';
+
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+
+  try {
+    const successful = document.execCommand('copy');
+    if (successful) {
+      onSuccess();
+    }
+  } catch (err) {
+    console.error('El fallback de copiado falló', err);
+  } finally {
+    document.body.removeChild(textarea);
+  }
+}
 
   // ── LIFECYCLE ──────────────────────────────────────────────────────────────
 

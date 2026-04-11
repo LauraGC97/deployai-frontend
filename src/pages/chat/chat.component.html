@@ -161,7 +161,8 @@
               </div>
             } @else {
               <div class="message-content markdown-body"
-                   [innerHTML]="renderMarkdown(message.content)">
+                   [innerHTML]="renderMarkdown(message.content)"
+                   (click)="copyHandler($event)">
               </div>
             }
             <span class="message-time">

@@ -6,7 +6,7 @@ export interface Message {
   role: MessageRole;
   content: string;
   timestamp: Date;
-  isLoading?: boolean; // true mientras la IA responde
+  isLoading?: boolean;
 }
 
 export interface ChatRequest {
